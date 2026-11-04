@@ -1,0 +1,22 @@
+'use client';
+import Link from 'next/link';
+import {useEffect,useState} from 'react';
+import type {Language} from '../../lib/content';
+import {eventDetails} from '../../lib/event-info';
+
+const words={
+ en:{back:'CYPHER REGISTRATION',heading:'EVENT INFO',subtitle:'Everything you need to know about GAMMAX x BONEZ.',where:'LOCATION',when:'DATE & TIME',price:'TICKETS / ENTRY',lineup:'WHAT TO EXPECT',updates:'LATEST UPDATES',faq:'GOOD TO KNOW',tba:'To be announced',register:'WANT TO GRAB THE MIC?',join:'REGISTER FOR THE CYPHER',questions:'More questions? Follow the organizers for announcements.',venue:'Irlandos · Ladadika 8, Mytilene 811 00',items:['Album showcase','Beat showcase','Indie / 90s hip-hop music','GAMMAX x BONEZ cypher verse'],notes:['Event information will be updated as details are confirmed.','Cypher participation requires a separate registration; attending the event does not automatically register you to perform.']},
+ el:{back:'ΕΓΓΡΑΦΗ ΣΤΟ CYPHER',heading:'ΠΛΗΡΟΦΟΡΙΕΣ EVENT',subtitle:'Όσα χρειάζεται να ξέρεις για το GAMMAX x BONEZ.',where:'ΤΟΠΟΘΕΣΙΑ',when:'ΗΜΕΡΟΜΗΝΙΑ & ΩΡΑ',price:'ΕΙΣΙΤΗΡΙΑ / ΕΙΣΟΔΟΣ',lineup:'ΤΙ ΘΑ ΔΕΙΣ',updates:'ΤΕΛΕΥΤΑΙΕΣ ΕΝΗΜΕΡΩΣΕΙΣ',faq:'ΧΡΗΣΙΜΕΣ ΠΛΗΡΟΦΟΡΙΕΣ',tba:'Θα ανακοινωθεί',register:'ΘΕΣ ΝΑ ΠΙΑΣΕΙΣ ΜΙΚΡΟΦΩΝΟ;',join:'ΔΗΛΩΣΕ ΣΥΜΜΕΤΟΧΗ ΣΤΟ CYPHER',questions:'Έχεις απορίες; Παρακολούθησε τις ανακοινώσεις των διοργανωτών.',venue:'Ιρλανδός · Λαδάδικα 8, Μυτιλήνη 811 00',items:['Παρουσίαση άλμπουμ','Beat showcase','Indie / 90s hip-hop μουσική','Cypher verse με GAMMAX x BONEZ'],notes:['Οι πληροφορίες θα ενημερώνονται μόλις επιβεβαιώνονται οι λεπτομέρειες.','Για να εμφανιστείς στο cypher χρειάζεται ξεχωριστή εγγραφή. Η είσοδος στο event δεν αποτελεί δήλωση συμμετοχής.']}
+};
+export default function InfoPage(){
+ const [lang,setLang]=useState<Language>('en');
+ useEffect(()=>{const l=new URLSearchParams(window.location.search).get('lang');if(l==='el')setLang('el')},[]);
+ const t=words[lang];
+ return <main><header><Link className="brand" href={`/?lang=${lang}`}>GAMMAX <span style={{color:'#ff8417'}}>x</span> BONEZ</Link><div className="nav-actions"><Link className="nav-link" href={`/?lang=${lang}`}>{t.back}</Link><button className="secondary" onClick={()=>setLang(lang==='en'?'el':'en')}>{lang==='en'?'ΕΛΛΗΝΙΚΑ':'ENGLISH'}</button></div></header>
+ <section className="hero info-hero"><div className="eyebrow">GAMMAX x BONEZ / LIVE</div><h1>{t.heading}</h1><p>{t.subtitle}</p></section>
+ <section className="info-grid"><article className="info-card"><div className="eyebrow">{t.where}</div><h2>{t.venue}</h2></article><article className="info-card"><div className="eyebrow">{t.when}</div><h2>{eventDetails.date[lang]||t.tba}</h2><p>{eventDetails.time[lang]||t.tba}</p></article><article className="info-card"><div className="eyebrow">{t.price}</div><h2>{eventDetails.tickets[lang]||t.tba}</h2></article></section>
+ <section><h2>{t.lineup}</h2><ul className="info-list">{t.items.map(x=><li key={x}>{x}</li>)}</ul></section>
+ <section><h2>{t.updates}</h2>{eventDetails.announcements.length?eventDetails.announcements.map((a,i)=><article className="info-card" key={i}><p className="muted">{a.date}</p><p>{a.text[lang]}</p></article>):<p>{t.questions}</p>}</section>
+ <section><h2>{t.faq}</h2><ul>{t.notes.map(x=><li key={x}>{x}</li>)}</ul></section>
+ <section className="info-cta"><h2>{t.register}</h2><Link className="button" href={`/?lang=${lang}#register`}>{t.join}</Link></section><footer>GAMMAX x BONEZ · EVENT INFO</footer></main>
+}
